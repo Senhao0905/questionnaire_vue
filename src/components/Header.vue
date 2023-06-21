@@ -1,7 +1,7 @@
 <script>
 import { mapStores, mapActions, mapState } from "pinia";
 import indexStore from "../stores/indexStore.js";
-export default{
+export default {
     methods: {
         // 淺層拷貝   1.自己的資料 2.要取用的方法
         // mapActions => pinia:actions
@@ -18,12 +18,13 @@ export default{
 
 <template>
     <header class=" flex flex-col justify-center items-center">
-        <h2 class=" text-4xl text-purple-500 font-bold">動態問卷系統</h2>
+        <h2 class=" text-4xl text-blue-500 font-bold">動態問卷系統</h2>
         <div class="router-box w-full flex justify-between">
-            <RouterLink class=" text-purple-500 mx-3 text-2xl" :class="{ local: location === 1 }" to="/">問卷填寫</RouterLink>
-            <RouterLink class=" text-purple-500 mx-3 text-2xl" :class="{ local: location === 2 }" to="/backEnd">問卷管理</RouterLink>
+            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: location === 1 }" to="/">問卷填寫</RouterLink>
+            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: location === 2 }" to="/backEnd">問卷管理
+            </RouterLink>
         </div>
-        
+
     </header>
 </template>
 
@@ -34,11 +35,9 @@ header {
     border: 2px rgb(123, 31, 120) solid;
     border-radius: 10px;
     .local {
-        transition: 0.7s;
-        background-color: rgb(168 85 247);
         border-radius: 5px;
-        color:white ;
-        font-weight: bold;
+        transition: 0.9s;
+        border-bottom: 1px black solid;
     }
 }
 </style>
