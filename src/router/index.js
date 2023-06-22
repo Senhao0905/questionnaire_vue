@@ -13,6 +13,17 @@ const router = createRouter({
       path: '/backEnd',
       name: 'BackEnd',
       component: () => import("../views/BackEnd.vue")
+    },
+    {
+      path: '/write:id',
+      name: 'write',
+      component: () => import("../views/WriteQuestioniare.vue"),
+      props : true
+    },
+    {
+      path: '/check',
+      name: 'check',
+      component: () => import("../views/QuestioniareCheck.vue"),
     }
   ]
 })

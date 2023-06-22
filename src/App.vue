@@ -9,7 +9,7 @@ export default{
 </script>
 
 <template>
-  <div class="container">
+  <div class="container bg-white">
       <HeaderView />
       <RouterView />
   </div>
@@ -17,10 +17,12 @@ export default{
   
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .container{
     margin: 0 auto;
     width: 50%;
     height: 100vh;
   }
+
+  
 </style>

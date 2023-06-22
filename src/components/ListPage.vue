@@ -163,6 +163,12 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     console.log(data);
+                    if (data.message === "Not found") {
+                        console.log("no value");
+                        this.pageItem = [];
+                        this.totalPage = 0;
+                        return;
+                    }
                     this.pageItem = [];
                     data.page.content.forEach(i => {
                         let newStart = new Date(i.start);
@@ -231,14 +237,22 @@ export default {
                     })
                     this.totalPage = data.page.totalPages;
                 })
+        },
+        writePage(id){
+            console.log(id);
+            this.$router.push({
+                name : 'write',
+                params : {
+                    id : id
+                }
+            })
         }
     }
 }
 </script>
 
 <template>
-    <div
-        class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl flex flex-col justify-center items-start">
+    <div class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl flex flex-col justify-center items-start">
         <div class="title flex m-2 relative">
             <h2 class="m-0">問卷標題 ：</h2>
             <i @click="changeKeyWord"
@@ -267,7 +281,7 @@ export default {
             </tr>
             <tr v-for="item in pageItem" :key="item.id" class=" text-center font-bold">
                 <td>{{ item.id }}</td>
-                <td v-if="item.status === '進行中'"><a class=" decoration-solid text-blue-600 text" href="">{{ item.name }}</a>
+                <td v-if="item.status === '進行中'"><a class=" cursor-pointer decoration-solid text-blue-600 text" @click="writePage(item.id)">{{ item.name }}</a>
                 </td>
                 <td v-else>{{ item.name }}</td>
                 <td>{{ item.status }}</td>
@@ -278,7 +292,7 @@ export default {
                 <td v-else>尚未結束</td>
             </tr>
         </table>
-        <ul class=" w-full ">
+        <ul v-if="totalPage !== 0" class=" w-full ">
             <div class="flex libox">
                 <li v-if="thisPage !== 0" @click="changePage(-1)">{{ "<" }}</li>
                 <li v-if="thisPage !== 0" @click="getPage(thisPage)">{{ thisPage }}</li>
@@ -287,7 +301,9 @@ export default {
                 <li v-if="thisPage < totalPage - 1" @click="changePage(1)">{{ ">" }}</li>
             </div>
         </ul>
-        <h2 class=" font-bold">目前頁數 {{ thisPage + 1 }}</h2>
+    </div>
+    <div class=" w-full ">
+        <h2 v-if="totalPage !== 0" class=" text-center font-bold  w-28  my-0 mx-auto">目前頁數 {{ thisPage + 1 }}</h2>
     </div>
 </template>
 
