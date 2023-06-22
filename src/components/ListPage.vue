@@ -4,10 +4,13 @@ export default {
         return {
             pageItem: [],
             totalPage: null,
-            thisPage: 0 ,
+            thisPage: 0,
+            inputWord: null,
             keyWord: null,
             start: null,
-            end: null
+            end: null,
+            isSearch: false,
+            isDate: false
         }
     },
     props: ["day"],
@@ -16,8 +19,8 @@ export default {
     },
     methods: {
         getQuestioniarePage(page) {
-            
-            this.pageItem = [] ;
+
+            this.pageItem = [];
             let body = {
                 "pageNumber": page
             }
@@ -47,26 +50,73 @@ export default {
                     this.totalPage = data.page.totalPages;
                 })
         },
-        changePage(page){
-            if(this.thisPage + (+page) > this.totalPage-1){
+        changePage(page) {
+            if (this.thisPage + (+page) > this.totalPage - 1) {
                 alert("已是最後一頁");
-                return ;
+                return;
             }
 
-            if(this.thisPage + (+page) < 0){
-                return ;
+            if (this.thisPage + (+page) < 0) {
+                return;
             }
-            this.thisPage = this.thisPage + (+page) ;
+            this.thisPage = this.thisPage + (+page);
             console.log(this.thisPage);
-            this.getQuestioniarePage(this.thisPage);
+            if (this.isSearch) {
+                console.log("search");
+                this.searchByName();
+                return;
+            }
+            else if (this.isDate) {
+                console.log("date");
+                this.searchDate();
+                return;
+            }
+            else {
+                console.log("no");
+                this.getQuestioniarePage(this.thisPage);
+            }
         },
-        getPage(page){
+        getPage(page) {
             console.log(page);
-            this.pageItem = [] ;
-            this.thisPage = page-1 ;
+            this.pageItem = [];
+            this.thisPage = page - 1;
             console.log(this.thisPage)
+            if (this.isSearch) {
+                let body = {
+                    "name": this.keyWord,
+                    "pageNumber": this.thisPage
+                }
+                fetch("http://localhost:8080/search_by_name_containing", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        data.page.content.forEach(i => {
+                            let newStart = new Date(i.start);
+                            let newEnd = new Date(i.end);
+                            let newDay = new Date(this.day)
+                            this.pageItem.push({
+                                id: i.id,
+                                name: i.name,
+                                status: newEnd < newDay ? "已結束" : newStart > newDay ? "未開始" : "進行中",
+                                start: i.start,
+                                end: i.end,
+                                record: "觀看紀錄"
+                            })
+                        })
+                        this.totalPage = data.page.totalPages;
+                    })
+
+                return;
+            }
+
             let body = {
-                "pageNumber": page-1
+                "pageNumber": page - 1
             }
             fetch("http://localhost:8080/get_all_questioniare", {
                 method: "POST",
@@ -93,6 +143,94 @@ export default {
                     })
                     this.totalPage = data.page.totalPages;
                 })
+        },
+        searchByName() {
+            if (this.keyWord === "" || this.keyWord === null) {
+                alert("搜尋不可為空 !");
+                return;
+            }
+            let body = {
+                "name": this.keyWord,
+                "pageNumber": this.thisPage
+            }
+            fetch("http://localhost:8080/search_by_name_containing", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    this.pageItem = [];
+                    data.page.content.forEach(i => {
+                        let newStart = new Date(i.start);
+                        let newEnd = new Date(i.end);
+                        let newDay = new Date(this.day)
+                        this.pageItem.push({
+                            id: i.id,
+                            name: i.name,
+                            status: newEnd < newDay ? "已結束" : newStart > newDay ? "未開始" : "進行中",
+                            start: i.start,
+                            end: i.end,
+                            record: "觀看紀錄"
+                        })
+                    })
+                    this.totalPage = data.page.totalPages;
+                })
+        },
+        changeKeyWord() {
+            this.isSearch = true;
+            this.isDate = false;
+            this.keyWord = this.inputWord;
+            this.thisPage = 0;
+            this.searchByName();
+        },
+        changeDate() {
+            this.isSearch = false;
+            this.isDate = true;
+            this.thisPage = 0;
+            this.searchDate();
+
+        },
+        searchDate() {
+            if (this.start === null || this.end === null) {
+                alert("日期不可為空 !");
+                return;
+            }
+            let body = {
+
+                "startDate": this.start,
+                "endDate": this.end,
+                "pageNumber": this.thisPage
+            }
+            fetch("http://localhost:8080/search_by_data", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    this.pageItem = [];
+                    data.page.content.forEach(i => {
+                        let newStart = new Date(i.start);
+                        let newEnd = new Date(i.end);
+                        let newDay = new Date(this.day)
+                        this.pageItem.push({
+                            id: i.id,
+                            name: i.name,
+                            status: newEnd < newDay ? "已結束" : newStart > newDay ? "未開始" : "進行中",
+                            start: i.start,
+                            end: i.end,
+                            record: "觀看紀錄"
+                        })
+                    })
+                    this.totalPage = data.page.totalPages;
+                })
         }
     }
 }
@@ -101,14 +239,18 @@ export default {
 <template>
     <div
         class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl flex flex-col justify-center items-start">
-        <div class="title flex m-2">
+        <div class="title flex m-2 relative">
             <h2 class="m-0">問卷標題 ：</h2>
-            <input class=" border-2  border-black rounded-md" type="text" v-model="keyWord">
+            <i @click="changeKeyWord"
+                class="cursor-pointer hover:scale-105 fa-solid fa-magnifying-glass absolute top-1 left-[240px]"></i>
+            <input class=" border-2  border-black rounded-md" type="text" v-model="inputWord">
         </div>
         <div class="time-input flex m-2">
             <h2>開始 / 結束 ：</h2>
             <input type="date" class=" border-2 mx-2  border-black rounded-md" v-model="start">
             <input type="date" class=" border-2 mx-2 border-black rounded-md" v-model="end">
+            <button @click="changeDate" type="button"
+                class=" bg-blue-500 text-white font-bold rounded-md px-3 hover:bg-blue-400">查詢</button>
         </div>
     </div>
 
@@ -137,12 +279,12 @@ export default {
             </tr>
         </table>
         <ul class=" w-full ">
-            <div class="flex libox" v-if="totalPage > 2">
+            <div class="flex libox">
                 <li v-if="thisPage !== 0" @click="changePage(-1)">{{ "<" }}</li>
                 <li v-if="thisPage !== 0" @click="getPage(thisPage)">{{ thisPage }}</li>
-                <li @click="getPage(thisPage+1)">{{ thisPage + 1 }}</li>
-                <li v-if="thisPage < totalPage-1" @click="getPage(thisPage + 2)">{{ thisPage +2 }}</li>
-                <li v-if="thisPage < totalPage-1" @click="changePage(1)">{{ ">" }}</li>
+                <li @click="getPage(thisPage + 1)">{{ thisPage + 1 }}</li>
+                <li v-if="thisPage < totalPage - 1" @click="getPage(thisPage + 2)">{{ thisPage + 2 }}</li>
+                <li v-if="thisPage < totalPage - 1" @click="changePage(1)">{{ ">" }}</li>
             </div>
         </ul>
         <h2 class=" font-bold">目前頁數 {{ thisPage + 1 }}</h2>
@@ -150,13 +292,14 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    .libox{
-        width: 100px;
-        margin: 0 auto;
-        li{
-            color: blue;
-            cursor: pointer;
-            margin: 0 5px;
-        }
+.libox {
+    width: 100px;
+    margin: 0 auto;
+
+    li {
+        color: blue;
+        cursor: pointer;
+        margin: 0 5px;
     }
+}
 </style>

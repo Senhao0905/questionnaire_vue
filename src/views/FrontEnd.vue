@@ -33,9 +33,12 @@ export default {
 
 <template>
     
-    <div class=" bg-blue-200 rounded-md h-2/3">
+    <div class="border-2 border-black rounded-md h-2/3 my-3">
         <ListPageView :day="day"/>
     </div>
 </template>
 
-<style></style>
+<style lang="scss" scoped>
+
+
+</style>

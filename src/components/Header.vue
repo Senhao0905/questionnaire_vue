@@ -32,7 +32,6 @@ export default {
 header {
     width: 100%;
     height: 100px;
-    border: 2px rgb(123, 31, 120) solid;
     border-radius: 10px;
     .local {
         border-radius: 5px;
