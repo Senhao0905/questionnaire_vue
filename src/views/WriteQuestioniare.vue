@@ -1,20 +1,14 @@
 <script>
 import { mapStores, mapActions, mapState } from "pinia";
 import indexStore from "../stores/indexStore.js";
+import { reactive } from "vue";
 export default {
     props: ["id"],
     data() {
         return {
             questionniare: null,
             questions: [],
-            resAnswer : new Map(),
-            resInfo : {
-                questionnaireId : this.id,
-                name : null ,
-                phone : null ,
-                email : null ,
-                age : null
-            }
+            resAnswer: {},
         }
     },
     mounted() {
@@ -22,15 +16,15 @@ export default {
     },
     computed: {
         // mapState => pinia:state , getters
-        ...mapState(indexStore, ["answers", "getAnswer"])
+        ...mapState(indexStore, ["answers", "getAnswer", "resInfo"])
     },
     methods: {
-        ...mapActions(indexStore, ["setAnswer","setInfo"]),
+        ...mapActions(indexStore, ["setAnswer", "setInfo", "setQuestions"]),
         getQuestion() {
             let body = {
                 id: this.id
             }
-
+            this.resInfo.questionnaireId = this.id;
             fetch("http://localhost:8080/questionniare_res", {
                 method: "POST",
                 headers: {
@@ -74,35 +68,39 @@ export default {
                 })
 
         },
-        addValue(id , answer){
+        addValue(id, answer) {
             console.log(id);
             console.log(answer);
-            this.resAnswer.set(id,answer)
-            console.log(this.resAnswer);
+            this.answers[id] = answer;
+            console.log(this.answers);
 
         },
-        saveAnswer(){
+        saveAnswer() {
             console.log(this.resInfo);
             console.log(this.resAnswer);
-            if(this.resInfo.name === null || this.resInfo.name === ""){
+            if (this.resInfo.name === null || this.resInfo.name === "") {
                 return alert("請輸入姓名 !");
             }
-            if(this.resInfo.phone === null || this.resInfo.phone === ""){
+            if (this.resInfo.phone === null || this.resInfo.phone === "") {
                 return alert("請輸入手機號碼 !");
             }
-            if(this.resInfo.email === null || this.resInfo.email === ""){
+            if (this.resInfo.email === null || this.resInfo.email === "") {
                 return alert("請輸入信箱 !");
             }
-            if(this.resInfo.age === null ){
+            if (this.resInfo.age === null) {
                 return alert("請輸入年齡 !");
             }
-            if(this.resAnswer.size !== this.questions.length){
+            if (Object.keys(this.answers).length !== this.questions.length) {
                 return alert("請選擇答案後再送出 !");
             }
-            this.setAnswer(this.resAnswer);
             this.setInfo(this.resInfo);
+            this.setQuestions(this.questions);
+            console.log(this.questionniare.name);
             this.$router.push({
-                name : "check"
+                name: 'check',
+                params: {
+                    propText: this.questionniare.name
+                }
             })
         }
     }
@@ -127,7 +125,7 @@ export default {
             <h3 class="mx-5 font-bold">信箱 :</h3>
             <input type="text" class=" mx-5 border rounded-md border-black" v-model="resInfo.email">
         </div>
-        <div class="my-2 flex w-full justify-start items-center" >
+        <div class="my-2 flex w-full justify-start items-center">
             <h3 class="mx-5 font-bold">年齡 :</h3>
             <input type="number" class=" mx-5 border rounded-md border-black" v-model="resInfo.age">
         </div>
@@ -139,8 +137,24 @@ export default {
                 <h3>Q : {{ item.name }}</h3>
                 <div v-if="item.type === '單選'">
                     <div v-for="i in item.answer">
-                        <input type="radio" :name="item.name" :id="item.id+i.answerValue" @change="addValue(item.id , i.id)" v-bind:value="i.id">
-                        <label :for="item.id+i.answerValue">{{ i.answerValue }}</label>
+                        <div v-if="Object.keys(this.answers).length === this.questions.length" v-for="(value, key) in answers">
+                            <div v-if="key === item.id && value === i.id">
+                                <input  type="radio" :name="item.name" :id="item.id + i.answerValue"
+                                    :checked="true" @change="addValue(item.id, i.id)" v-bind:value="i.id">
+                                <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
+                            </div>
+                            <div v-if="key === item.id && value !== i.id">
+                                <input  type="radio" :name="item.name" :id="item.id + i.answerValue"
+                                    :checked="false" @change="addValue(item.id, i.id)" v-bind:value="i.id">
+                                <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <input type="radio" :name="item.name" :id="item.id + i.answerValue"
+                                @change="addValue(item.id, i.id)" v-bind:value="i.id">
+                            <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
+                        </div>
+
                     </div>
                 </div>
                 <div v-else>
@@ -150,7 +164,8 @@ export default {
         </div>
 
         <div class="w-full flex justify-center items-center">
-            <button @click="saveAnswer" class="bg-blue-500 hover:bg-blue-400 text-white font-bold px-3 rounded-md my-2" type="button">預覽答案</button>
+            <button @click="saveAnswer" class="bg-blue-500 hover:bg-blue-400 text-white font-bold px-3 rounded-md my-2"
+                type="button">預覽答案</button>
         </div>
 
     </div>

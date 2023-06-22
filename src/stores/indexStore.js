@@ -5,8 +5,15 @@ export default defineStore("indexStore", {
   // data
   state: () => ({
       location : 0,
-      answers : null,
-      resInfo : null
+      answers : {},
+      resInfo : {
+        questionnaireId:null,
+        name : null ,
+        phone : null ,
+        email : null ,
+        age : null 
+      },
+      questions : null
   }),
   // computed
   getters: {
@@ -29,6 +36,9 @@ export default defineStore("indexStore", {
       },
       setInfo(info){
         this.resInfo = info;
+      },
+      setQuestions(questions){
+        this.questions = questions;
       }
   }
 });

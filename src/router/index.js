@@ -21,9 +21,10 @@ const router = createRouter({
       props : true
     },
     {
-      path: '/check',
+      path: '/check:propText',
       name: 'check',
       component: () => import("../views/QuestioniareCheck.vue"),
+      props : true
     }
   ]
 })
