@@ -9,7 +9,8 @@ export default {
     },
     data() {
         return {
-            day: null
+            day: null,
+            isWrite : true
         }
     },
     methods: {
@@ -24,7 +25,7 @@ export default {
         }
     },
     mounted() {
-        this.updateLocation(1);
+        this.updateLocation(10);
         this.getToday();
     }
 }
@@ -34,7 +35,7 @@ export default {
 <template>
     
     <div class="border-2 border-black rounded-md h-5/6 my-3 flex flex-col justify-between">
-        <ListPageView :day="day"/>
+        <ListPageView :day="day" :isWrite="isWrite"/>
     </div>
 </template>
 

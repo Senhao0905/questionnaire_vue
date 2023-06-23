@@ -25,6 +25,19 @@ const router = createRouter({
       name: 'check',
       component: () => import("../views/QuestioniareCheck.vue"),
       props : true
+    },
+    {
+      path: '/edit',
+      name: 'edit',
+      component: () => import("../views/EditQuestionniare.vue"),
+      children :[
+        {
+          path : 'questionniare:isEdit:id',
+          name : 'edit.questionniare',
+          component: () => import("../components/QuestionniareEdit.vue"),
+          props : true,
+        }
+      ]
     }
   ]
 })

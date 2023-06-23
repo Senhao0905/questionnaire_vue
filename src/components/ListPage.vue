@@ -10,14 +10,34 @@ export default {
             start: null,
             end: null,
             isSearch: false,
-            isDate: false
+            isDate: false,
+            delArr: []
         }
     },
-    props: ["day"],
+    props: ["day", "isWrite"],
     mounted() {
         this.getQuestioniarePage(this.thisPage);
     },
     methods: {
+        editQuestionniare(id) {
+            console.log("edit");
+            this.$router.push({
+                name :"edit.questionniare",
+                params : {
+                    id : id,
+                    isEdit : true
+                }
+            });
+        },
+        insertQuestionniare(){
+            this.$router.push({
+                name :"edit",
+                params : {
+                    id : "666" ,
+                    isEdit : false
+                }
+            });
+        },
         getQuestioniarePage(page) {
 
             this.pageItem = [];
@@ -238,21 +258,51 @@ export default {
                     this.totalPage = data.page.totalPages;
                 })
         },
-        writePage(id){
+        writePage(id) {
             console.log(id);
             this.$router.push({
-                name : 'write',
-                params : {
-                    id : id
+                name: 'write',
+                params: {
+                    id: id
                 }
             })
+        },
+        delQuestionniare() {
+            if (this.delArr.length === 0) {
+                alert("未點選任何問卷 ! ");
+                return;
+            }
+            let yes = confirm('你確定要刪除嗎？');
+            if (yes) {
+                this.delArr.forEach(i => {
+                    let body = {
+                        id: i
+                    }
+                    fetch("http://localhost:8080/del_questionnaire", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(body)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log(data);
+                        })
+                })
+
+                alert("刪除成功 !");
+                location.reload();
+            }
+
         }
     }
 }
 </script>
 
 <template>
-    <div class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl flex flex-col justify-center items-start">
+    <div
+        class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl flex flex-col justify-center items-start">
         <div class="title flex m-2 relative">
             <h2 class="m-0">問卷標題 ：</h2>
             <i @click="changeKeyWord"
@@ -269,8 +319,14 @@ export default {
     </div>
 
     <div class="value-table ">
+
+        <div v-if="!isWrite" class="fuction-box">
+            <i @click="delQuestionniare" class=" mx-6 fa-solid fa-trash-can text-2xl hover:scale-105 cursor-pointer"></i>
+            <i @click="insertQuestionniare" class="fa-solid fa-plus text-2xl hover:scale-105 cursor-pointer"></i>
+        </div>
         <table class=" w-full border-black">
             <tr class="text-center  border-black font-bold">
+                <th v-if="!isWrite">選取</th>
                 <th>#</th>
                 <th>問卷</th>
                 <th>狀態</th>
@@ -280,20 +336,35 @@ export default {
 
             </tr>
             <tr v-for="item in pageItem" :key="item.id" class=" text-center font-bold">
-                <td>{{ item.id }}</td>
-                <td v-if="item.status === '進行中'"><a class=" cursor-pointer decoration-solid text-blue-600 text" @click="writePage(item.id)">{{ item.name }}</a>
+                <td v-if="!isWrite">
+                    <input v-if="item.status === '未開始'" type="checkbox" :id="item.id" :value="item.id" v-model="delArr">
+                    <input v-else type="checkbox" :id="item.id" :disabled="true">
                 </td>
-                <td v-else>{{ item.name }}</td>
+
+                <td>{{ item.id }}</td>
+
+                <td v-if="item.status === '進行中'">
+                    <a v-if="isWrite" class=" cursor-pointer decoration-solid text-blue-600 text"
+                        @click="writePage(item.id)">{{ item.name }}</a>
+                    <a v-else>{{ item.name }}</a>
+                </td>
+                <td v-else>
+                    <a v-if="!isWrite && item.status === '未開始'" class=" cursor-pointer decoration-solid text-blue-600 text"
+                        @click="editQuestionniare(item.id)">{{ item.name }}</a>
+                    <a v-else>{{ item.name }}</a>
+                </td>
                 <td>{{ item.status }}</td>
                 <td>{{ item.start }}</td>
                 <td>{{ item.end }}</td>
-                <td v-if="item.status === '已結束'"><a class=" decoration-solid text-blue-600 text" href="">{{ item.record
-                }}</a></td>
+
+                <td v-if="item.status === '已結束'">
+                    <a class=" decoration-solid text-blue-600 text" href="">{{ item.record }}</a>
+                </td>
                 <td v-else>尚未結束</td>
             </tr>
         </table>
         <ul v-if="totalPage !== 0" class=" w-full ">
-            <div class="flex libox">
+            <div class="flex libox text-center">
                 <li v-if="thisPage !== 0" @click="changePage(-1)">{{ "<" }}</li>
                 <li v-if="thisPage !== 0" @click="getPage(thisPage)">{{ thisPage }}</li>
                 <li @click="getPage(thisPage + 1)">{{ thisPage + 1 }}</li>
@@ -315,7 +386,7 @@ export default {
     li {
         color: blue;
         cursor: pointer;
-        margin: 0 5px;
+        margin: 0 auto;
     }
 }
 </style>
