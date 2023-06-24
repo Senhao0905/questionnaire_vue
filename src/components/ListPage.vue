@@ -21,12 +21,9 @@ export default {
     methods: {
         editQuestionniare(id) {
             console.log("edit");
+            sessionStorage.setItem("id",id);
             this.$router.push({
                 name :"edit.questionniare",
-                params : {
-                    id : id,
-                    isEdit : true
-                }
             });
         },
         insertQuestionniare(){
@@ -34,8 +31,8 @@ export default {
                 name :"edit",
                 params : {
                     id : "666" ,
-                    isEdit : false
-                }
+                },
+
             });
         },
         getQuestioniarePage(page) {

@@ -23,11 +23,11 @@ export default {
     <div>
         <div class=" py-2 router-box flex rounded-md bg-slate-400">
             <RouterLink :class="{ local: location === 21}" class=" text-black mx-1 text-xl font-bold" to="/edit/questionniare">問卷</RouterLink>
-            <RouterLink class=" text-black mx-1 text-xl font-bold " to="">題目</RouterLink>
+            <RouterLink :class="{ local: location === 22}" class=" text-black mx-1 text-xl font-bold " to="/edit/question">題目</RouterLink>
             <RouterLink class=" text-black mx-1 text-xl font-bold" to="">問卷回饋</RouterLink>
             <RouterLink class=" text-black mx-1 text-xl font-bold" to="">統計</RouterLink>
         </div>
-        <RouterView />
+        <RouterView :isEdit="true"/>
     </div>
 </template>
 

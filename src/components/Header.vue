@@ -20,8 +20,8 @@ export default {
     <header class=" flex flex-col justify-center items-center">
         <h2 class=" text-4xl text-blue-500 font-bold">動態問卷系統</h2>
         <div class="router-box w-full flex justify-between">
-            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 10 <= location >= 10 }" to="/">問卷填寫</RouterLink>
-            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 20 <= location >= 21 }" to="/backEnd">問卷管理
+            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 9 < location && 20 > location}" to="/">問卷填寫</RouterLink>
+            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 19 < location && location < 30 }" to="/backEnd">問卷管理
             </RouterLink>
         </div>
 

@@ -8,12 +8,19 @@ export default {
     },
     methods: {
         ...mapActions(indexStore, ["updateLocation"]),
-        getToday(){
+        getToday() {
             let today = new Date();
             let year = today.getFullYear();
             let month = today.getMonth() + 1;
+            if (month < 10) {
+                month = '0' + month
+            }
             let date = today.getDate();
-            this.day = year + "-" + month +"-" +date;
+            if (date < 10) {
+                date = '0' + date
+            }
+            this.day = year + "-" + month + "-" + date;
+            this.start = this.day;
             console.log(this.day);
         }
     },
