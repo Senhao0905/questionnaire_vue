@@ -22,17 +22,16 @@ export default {
         editQuestionniare(id) {
             console.log("edit");
             sessionStorage.setItem("id",id);
+            sessionStorage.setItem("isEdit",true);
             this.$router.push({
-                name :"edit.questionniare",
+                name :"edit",
             });
         },
         insertQuestionniare(){
+            sessionStorage.setItem("isEdit","");
+            console.log(sessionStorage.getItem("isEdit"));
             this.$router.push({
-                name :"edit",
-                params : {
-                    id : "666" ,
-                },
-
+                name :"edit.questionniare",
             });
         },
         getQuestioniarePage(page) {

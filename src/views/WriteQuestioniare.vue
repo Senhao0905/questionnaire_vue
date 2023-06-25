@@ -132,27 +132,35 @@ export default {
 
         <!-- 題目區 -->
         <div v-if="questions !== null">
-            <div class="m-3" v-for="item in questions">
-                <h3>題號 :{{ item.id }}</h3>
+            <div class="m-3" v-for="(item, index ) in questions">
+                <h3>題號 :{{ index + 1 }}</h3>
                 <h3>Q : {{ item.name }}</h3>
                 <div v-if="item.type === '單選'">
+                    <div>
+                        <h2>有出來</h2>
+                    </div>
                     <div v-for="i in item.answer">
-                        <div v-if="Object.keys(this.answers).length === this.questions.length" v-for="(value, key) in answers">
-                            <div v-if="key === item.id && value === i.id">
-                                <input  type="radio" :name="item.name" :id="item.id + i.answerValue"
-                                    :checked="true" @change="addValue(item.id, i.id)" v-bind:value="i.id">
+
+                        <div v-if="Object.keys(this.answers).length === this.questions.length"
+                            v-for="(value, key) in answers">
+                            
+                            <div v-if="key == index+1 && value === i.id">
+                                <input type="radio" :name="item.name" :id="item.id + i.answerValue" :checked="true"
+                                    @change="addValue((index + 1), i.id)" v-bind:value="i.id">
                                 <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
                             </div>
-                            <div v-if="key === item.id && value !== i.id">
-                                <input  type="radio" :name="item.name" :id="item.id + i.answerValue"
-                                    :checked="false" @change="addValue(item.id, i.id)" v-bind:value="i.id">
+
+                            <div v-if="key == index+1 && value !== i.id">
+                                <input type="radio" :name="item.name" :id="item.id + i.answerValue" :checked="false"
+                                    @change="addValue((index + 1), i.id)" v-bind:value="i.id">
                                 <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
                             </div>
                         </div>
                         <div v-else>
                             <input type="radio" :name="item.name" :id="item.id + i.answerValue"
-                                @change="addValue(item.id, i.id)" v-bind:value="i.id">
+                                @change="addValue((index + 1), i.id)" v-bind:value="i.id">
                             <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
+
                         </div>
 
                     </div>

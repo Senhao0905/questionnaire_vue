@@ -71,18 +71,18 @@ export default {
         <!-- 題目區 -->
 
         <div v-if="questions !== null">
-            <div class="m-3" v-for="item in questions">
+            <div class="m-3" v-for= " ( item ,index ) in questions">
                 <h3>題號 :{{ item.id }}</h3>
                 <h3>Q : {{ item.name }}</h3>
                 <div v-if="item.type === '單選'">
                     <div v-for="i in item.answer">
                         <div v-for="(value, key) in answers">
-                            <div v-if="key === item.id && value === i.id">
+                            <div v-if="key == index+1 && value === i.id">
                                 <input :disabled="true" type="radio" :name="item.name" :id="item.id + i.answerValue"
                                     :checked="true">
                                 <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
                             </div>
-                            <div v-if="key === item.id && value !== i.id">
+                            <div v-if="key == index+1 && value !== i.id">
                                 <input :disabled="true" type="radio" :name="item.name" :id="item.id + i.answerValue"
                                     :checked="false">
                                 <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>

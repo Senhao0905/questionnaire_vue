@@ -7,7 +7,7 @@ export default {
         ListPageView
     },
     methods: {
-        ...mapActions(indexStore, ["updateLocation"]),
+        ...mapActions(indexStore, ["updateLocation","reset"]),
         getToday() {
             let today = new Date();
             let year = today.getFullYear();

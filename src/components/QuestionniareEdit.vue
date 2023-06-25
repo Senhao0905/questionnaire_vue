@@ -8,13 +8,14 @@ export default {
             start: null,
             end: null,
             name: null,
-            textValue: null
+            textValue: null,
+            questions:[]
         }
     },
     methods: {
         // 淺層拷貝   1.自己的資料 2.要取用的方法
         // mapActions => pinia:actions
-        ...mapActions(indexStore, ["updateLocation", "setQuestionniare"]),
+        ...mapActions(indexStore, ["updateLocation", "setQuestionniare","setQuestion"]),
         getToday() {
             let today = new Date();
             let year = today.getFullYear();
@@ -46,52 +47,40 @@ export default {
             console.log(this.day);
             console.log(this.end);
         },
-        getQuestionniare() {
-            console.log(this.id);
-            let body = {
-                id: sessionStorage.getItem("id")
-            }
-            console.log(body);
-            fetch("http://localhost:8080/questionniare_res", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data);
-                    this.name = data.questionnaire.name;
-                    this.textValue = data.questionnaire.describeText;
-                    this.start = data.questionnaire.start;
-                    this.end = data.questionnaire.end;
-                })
-        },
         saveQuestionniare() {
-            let saveQuestionnaire =  {
+            let questionnaire = {
                 id: sessionStorage.getItem("id"),
                 name: this.name,
                 describeText: this.textValue,
                 start: this.start,
                 end: this.end
             }
-            console.log(saveQuestionnaire);
-            this.setQuestionniare(saveQuestionnaire);
+
+            this.setQuestionniare(questionnaire);
+
             this.$router.push({
-                name : "edit.question"
+                name : 'edit.question'
             })
+
+        },
+        getQuestionniare() {
+            console.log(this.questionnaire);
+            this.name = this.questionnaire.name;
+            console.log(this.name)
+            this.textValue = this.questionnaire.describeText;
+            this.start = this.questionnaire.start;
+            this.end = this.questionnaire.end;
         }
 
     },
     computed: {
         // mapState => pinia:state , getters
-        ...mapState(indexStore, ["location", "getLocation"])
+        ...mapState(indexStore, ["location", "getLocation", "questionnaire"])
     },
     mounted() {
+        console.log("到了questionniare");
         this.updateLocation(21);
         this.getToday();
-        console.log(typeof this.isEdit);
         if (this.isEdit) {
             this.getQuestionniare();
         }
@@ -102,7 +91,7 @@ export default {
 
 
 <template>
-    <div class=" border-2 border-black rounded-md my-2">
+    <div v-if="questionnaire.name !== null" class=" border-2 border-black rounded-md my-2">
         <div class="flex px-2 my-2">
             <h2>問卷名稱 : </h2>
             <input class=" border border-black rounded-md mx-2" type="text" v-model="name">
