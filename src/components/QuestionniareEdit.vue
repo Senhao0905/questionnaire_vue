@@ -9,14 +9,15 @@ export default {
             end: null,
             name: null,
             textValue: null,
-            questions:[]
+            questions: []
         }
     },
     methods: {
         // 淺層拷貝   1.自己的資料 2.要取用的方法
         // mapActions => pinia:actions
-        ...mapActions(indexStore, ["updateLocation", "setQuestionniare","setQuestion"]),
+        ...mapActions(indexStore, ["updateLocation", "setQuestionniare", "setQuestion"]),
         getToday() {
+            console.log("取時間")
             let today = new Date();
             let year = today.getFullYear();
             let month = today.getMonth() + 1;
@@ -48,8 +49,16 @@ export default {
             console.log(this.end);
         },
         saveQuestionniare() {
+            console.log(sessionStorage.getItem("id"));
+            if (this.name === "" || this.name == null || this.textValue === "" || this.textValue == null
+                || this.start == null || this.end == null) {
+
+                alert("內容有誤");
+                return;
+            }
+
             let questionnaire = {
-                id: sessionStorage.getItem("id"),
+                id: sessionStorage.getItem("id") != null ? sessionStorage.getItem('id') : null,
                 name: this.name,
                 describeText: this.textValue,
                 start: this.start,
@@ -57,19 +66,22 @@ export default {
             }
 
             this.setQuestionniare(questionnaire);
-
+            console.log(questionnaire);
             this.$router.push({
-                name : 'edit.question'
+                name: 'edit.question'
             })
 
         },
         getQuestionniare() {
             console.log(this.questionnaire);
-            this.name = this.questionnaire.name;
-            console.log(this.name)
-            this.textValue = this.questionnaire.describeText;
-            this.start = this.questionnaire.start;
-            this.end = this.questionnaire.end;
+            if (this.questionnaire.name != null) {
+                this.name = this.questionnaire.name;
+                console.log(this.name)
+                this.textValue = this.questionnaire.describeText;
+                this.start = this.questionnaire.start;
+                this.end = this.questionnaire.end;
+            }
+
         }
 
     },
@@ -81,9 +93,8 @@ export default {
         console.log("到了questionniare");
         this.updateLocation(21);
         this.getToday();
-        if (this.isEdit) {
-            this.getQuestionniare();
-        }
+        this.getQuestionniare();
+
     },
     props: ["isEdit"]
 }
@@ -91,7 +102,7 @@ export default {
 
 
 <template>
-    <div v-if="questionnaire.name !== null" class=" border-2 border-black rounded-md my-2">
+    <div class=" border-2 border-black rounded-md my-2">
         <div class="flex px-2 my-2">
             <h2>問卷名稱 : </h2>
             <input class=" border border-black rounded-md mx-2" type="text" v-model="name">
@@ -110,7 +121,7 @@ export default {
 
         <div class=" flex px-2 my-2">
             <h2>結束時間 :</h2>
-            <input class="border border-black rounded-md px-2 mx-2" type="date" v-model="end" :min="day">
+            <input class="border border-black rounded-md px-2 mx-2" type="date" v-model="end" :min="start">
         </div>
 
         <div class=" w-full flex justify-end ">

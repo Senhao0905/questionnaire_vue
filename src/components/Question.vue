@@ -18,7 +18,7 @@ export default {
         ...mapState(indexStore, ["location", "getLocation", "questEdit", "questions", "questionnaire"])
     },
     methods: {
-        ...mapActions(indexStore, ["insertQuestions", "updateLocation", "setQuestionniare", "setQuestion", "updateQuestions", "delQuestions"]),
+        ...mapActions(indexStore, ["insertQuestions", "updateLocation", "setQuestionniare", "setQuestion", "updateQuestions", "delQuestions","setQuestions"]),
         edit(id, name, type, answer) {
             this.id = id;
             this.name = name;
@@ -111,26 +111,7 @@ export default {
                 name: 'edit.questionniare'
             })
         },
-        saveChange() {
-            console.log(this.questionnaire);
-
-            let body = {
-                questionnaire: this.questionnaire
-
-            }
-
-            fetch("http://localhost:8080/update_questionnaire", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body)
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-            })
-            console.log(this.questions);
+        saveChangeQuestion() {
             let newQuestion = [];
             newQuestion = this.questions.filter(i => {
                 return i.id === null
@@ -162,10 +143,10 @@ export default {
                     },
                     body: JSON.stringify(boddy)
                 })
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data);
-                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                    })
             })
             console.log(newQuestion)
             newQuestion.forEach(i => {
@@ -191,16 +172,97 @@ export default {
                     },
                     body: JSON.stringify(boddy)
                 })
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data);
-                    
-                })
-            })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        let questions = [];
+                        this.setQuestions(questions);
 
-            alert("儲存成功");
-            location.href = '/backEnd'
-            
+                        alert("儲存成功");
+                        location.href = '/backEnd'
+                    })
+            })
+        },
+        saveChange() {
+            console.log(this.questionnaire);
+            if (this.questions.length <= 0) {
+                    alert("請新增問題 !");
+                    return;
+                }
+            if (this.isEdit) {
+                let body = {
+                    questionnaire: this.questionnaire
+                }
+                fetch("http://localhost:8080/update_questionnaire", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.message !== "Successful !") {
+                            alert("問卷內容有錯誤 !");
+                            return;
+                        }
+                        let questionnaire = {
+                            id: null,
+                            name: null,
+                            describeText: null,
+                            start: null,
+                            end: null
+                        }
+                        this.setQuestionniare(questionnaire);
+                        this.saveChangeQuestion();
+                    })
+                console.log(this.questions);
+            }
+            else {
+                let body = {
+                    questionnaire: {
+                        name: this.questionnaire.name,
+                        describeText: this.questionnaire.describeText,
+                        start: this.questionnaire.start,
+                        end: this.questionnaire.end
+                    }
+
+                }
+                console.log(body);
+                fetch("http://localhost:8080/add_questionnaire", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(body)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.message !== "Successful !") {
+                            alert("問卷內容有錯誤 !");
+                            return;
+                        }
+                        let questionnaire = {
+                            id: null,
+                            name: null,
+                            describeText: null,
+                            start: null,
+                            end: null
+                        }
+                        this.setQuestionniare(questionnaire);
+                        sessionStorage.setItem("id",data.questionnaire.id);
+                        this.saveChangeQuestion();
+                    })
+                
+                
+            }
+
+
+
+
+
         }
     },
     mounted() {

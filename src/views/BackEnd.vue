@@ -7,7 +7,7 @@ export default {
         ListPageView
     },
     methods: {
-        ...mapActions(indexStore, ["updateLocation","reset"]),
+        ...mapActions(indexStore, ["updateLocation", "reset","setQuestionniare","setQuestions"]),
         getToday() {
             let today = new Date();
             let year = today.getFullYear();
@@ -26,12 +26,25 @@ export default {
     },
     mounted() {
         this.updateLocation(20)
+        
+        let questionnaire = {
+            id: null,
+            name: null,
+            describeText: null,
+            start: null,
+            end: null
+        }
+        this.setQuestionniare(questionnaire);
+        let questions = [];
+        this.setQuestions(questions);
+        sessionStorage.setItem("id",null);
         this.getToday();
+
     },
     data() {
         return {
             day: null,
-            isWrite :false
+            isWrite: false
         }
     }
 }
@@ -39,7 +52,7 @@ export default {
 
 <template>
     <div class="border-2 border-black rounded-md h-5/6 my-3 flex flex-col justify-between">
-        <ListPageView  :day="day" :isWrite="isWrite"/>
+        <ListPageView :day="day" :isWrite="isWrite" />
     </div>
 </template>
 
