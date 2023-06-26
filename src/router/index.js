@@ -42,6 +42,20 @@ const router = createRouter({
           component: () => import("../components/Question.vue"),
         }
       ]
+    },
+    {
+      path: '/record:qid',
+      name: 'record',
+      component: () => import("../views/RecordPage.vue"),
+      props : true,
+      children :[
+        {
+          path : 'recordList:id',
+          name : 'record.list',
+          component : () => import("../components/RecordList.vue"),
+          props : true
+        }
+      ]
     }
   ]
 })

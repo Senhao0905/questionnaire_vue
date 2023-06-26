@@ -291,6 +291,16 @@ export default {
                 location.reload();
             }
 
+        },
+        recordPage(isBack,qid){
+            console.log(qid)
+            sessionStorage.setItem("isBack",isBack);
+            this.$router.push({
+                name :'record',
+                params :{
+                    qid :qid
+                }
+            })
         }
     }
 }
@@ -354,7 +364,8 @@ export default {
                 <td>{{ item.end }}</td>
 
                 <td v-if="item.status === '已結束'">
-                    <a class=" decoration-solid text-blue-600 text" href="">{{ item.record }}</a>
+                    <a v-if="!isWrite" class=" decoration-solid text-blue-600 text cursor-pointer" @click="recordPage('true',item.id)">{{ item.record }}</a>
+                    <a v-else class=" decoration-solid text-blue-600 text cursor-pointer"  @click="recordPage('',item.id)">{{ item.record }}</a>
                 </td>
                 <td v-else>尚未結束</td>
             </tr>
