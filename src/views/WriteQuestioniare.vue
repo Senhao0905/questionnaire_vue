@@ -70,10 +70,32 @@ export default {
         },
         addValue(id, answer) {
             console.log(id);
-            console.log(answer);
-            this.answers[id] = answer;
+            this.answers[id] = []
+            this.answers[id].push(answer)
+            this.answers[id].forEach(i => {
+                console.log(i);
+            })
             console.log(this.answers);
-
+        },
+        addValueCheck(id, answer, checked) {
+            let check = document.getElementById(`${checked}`).checked;
+            console.log(check);
+            if(this.answers[id] == undefined){
+                this.answers[id] = [];
+            }
+            if (check) {
+                this.answers[id].push(answer);
+            }
+            else {
+                let arr = [];
+                this.answers[id].forEach(i => {
+                    if(i != answer){
+                        arr.push(i);
+                    }
+                })
+                this.answers[id] = arr ;
+            }
+            console.log(this.answers)
         },
         saveAnswer() {
             console.log(this.resInfo);
@@ -136,21 +158,17 @@ export default {
                 <h3>題號 :{{ index + 1 }}</h3>
                 <h3>Q : {{ item.name }}</h3>
                 <div v-if="item.type === '單選'">
-                    <div>
-                        <h2>有出來</h2>
-                    </div>
                     <div v-for="i in item.answer">
-
                         <div v-if="Object.keys(this.answers).length === this.questions.length"
                             v-for="(value, key) in answers">
-                            
-                            <div v-if="key == index+1 && value === i.id">
+
+                            <div v-if="key == index + 1 && value.includes(i.id)">
                                 <input type="radio" :name="item.name" :id="item.id + i.answerValue" :checked="true"
                                     @change="addValue((index + 1), i.id)" v-bind:value="i.id">
                                 <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
                             </div>
 
-                            <div v-if="key == index+1 && value !== i.id">
+                            <div v-if="key == index + 1 && !value.includes(i.id)">
                                 <input type="radio" :name="item.name" :id="item.id + i.answerValue" :checked="false"
                                     @change="addValue((index + 1), i.id)" v-bind:value="i.id">
                                 <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
@@ -166,7 +184,31 @@ export default {
                     </div>
                 </div>
                 <div v-else>
-                    <h2>多</h2>
+                    <div v-for="i in item.answer">
+                        <div v-if="Object.keys(this.answers).length === this.questions.length"
+                            v-for="(value, key) in answers">
+
+                            <div v-if="key == index + 1 && value.includes(i.id)">
+
+                                <input type="checkbox" :name="item.name" :id="item.id + i.id" :checked="true"
+                                    @change="addValueCheck((index + 1), i.id, (item.id + i.id))" v-bind:value="i.id">
+                                <label :for="item.id + i.id">{{ i.answerValue }}</label>
+                            </div>
+
+                            <div v-if="key == index + 1 && !value.includes(i.id)">
+                                <input type="checkbox" :name="item.name" :id="item.id + i.id" :checked="false"
+                                    @change="addValueCheck((index + 1), i.id, (item.id + i.id))" v-bind:value="i.id">
+                                <label :for="item.id + i.id">{{ i.answerValue }}</label>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <input type="checkbox" :name="item.name" :id="item.id + i.id"
+                                @change="addValueCheck((index + 1), i.id, (item.id + i.id))" v-bind:value="i.id">
+                            <label :for="item.id + i.id">{{ i.answerValue }}</label>
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
