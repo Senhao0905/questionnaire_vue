@@ -22,7 +22,8 @@ export default defineStore("indexStore", {
       end: null
     },
     waitSaveQuestionniare: null,
-    questEdit: []
+    questEdit: [],
+    anserCount: []
   }),
   // computed
   getters: {
@@ -45,6 +46,9 @@ export default defineStore("indexStore", {
         start: null,
         end: null
       }
+    },
+    setData(anserCount) {
+      this.anserCount = anserCount
     },
     updateLocation(local) {
       this.location = local;
@@ -74,10 +78,10 @@ export default defineStore("indexStore", {
     delQuestions(name) {
       this.questions = this.questions.filter(item => {
         return item.name !== name;
-    })
+      })
       console.log(this.questions);
     },
-    insertQuestions(question){
+    insertQuestions(question) {
       this.questions.push(question);
     },
     setQuestionniare(questionniare) {

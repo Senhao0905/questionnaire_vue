@@ -54,6 +54,17 @@ const router = createRouter({
           name : 'record.list',
           component : () => import("../components/RecordList.vue"),
           props : true
+        },
+        {
+          path : 'recordInfo:seq',
+          name : 'record.info',
+          component : () => import("../views/RecordInfo.vue"),
+          props : true
+        },
+        {
+          path :'recordChart',
+          name :'record.chart',
+          component : ()=> import("../views/RecordChart.vue"),
         }
       ]
     }

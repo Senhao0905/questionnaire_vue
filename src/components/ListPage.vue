@@ -21,17 +21,17 @@ export default {
     methods: {
         editQuestionniare(id) {
             console.log("edit");
-            sessionStorage.setItem("id",id);
-            sessionStorage.setItem("isEdit",true);
+            sessionStorage.setItem("id", id);
+            sessionStorage.setItem("isEdit", true);
             this.$router.push({
-                name :"edit",
+                name: "edit",
             });
         },
-        insertQuestionniare(){
-            sessionStorage.setItem("isEdit","");
+        insertQuestionniare() {
+            sessionStorage.setItem("isEdit", "");
             console.log(sessionStorage.getItem("isEdit"));
             this.$router.push({
-                name :"edit.questionniare",
+                name: "edit.questionniare",
             });
         },
         getQuestioniarePage(page) {
@@ -292,13 +292,13 @@ export default {
             }
 
         },
-        recordPage(isBack,qid){
+        recordPage(isBack, qid) {
             console.log(qid)
-            sessionStorage.setItem("isBack",isBack);
+            sessionStorage.setItem("isBack", isBack);
             this.$router.push({
-                name :'record',
-                params :{
-                    qid :qid
+                name: 'record',
+                params: {
+                    qid: qid
                 }
             })
         }
@@ -307,8 +307,7 @@ export default {
 </script>
 
 <template>
-    <div
-        class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl flex flex-col justify-center items-start">
+    <div class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl ">
         <div class="title flex m-2 relative">
             <h2 class="m-0">問卷標題 ：</h2>
             <i @click="changeKeyWord"
@@ -324,12 +323,13 @@ export default {
         </div>
     </div>
 
-    <div class="value-table ">
+    <div class="value-table  ">
 
         <div v-if="!isWrite" class="fuction-box">
             <i @click="delQuestionniare" class=" mx-6 fa-solid fa-trash-can text-2xl hover:scale-105 cursor-pointer"></i>
             <i @click="insertQuestionniare" class="fa-solid fa-plus text-2xl hover:scale-105 cursor-pointer"></i>
         </div>
+
         <table class=" w-full border-black">
             <tr class="text-center  border-black font-bold">
                 <th v-if="!isWrite">選取</th>
@@ -364,12 +364,15 @@ export default {
                 <td>{{ item.end }}</td>
 
                 <td v-if="item.status === '已結束'">
-                    <a v-if="!isWrite" class=" decoration-solid text-blue-600 text cursor-pointer" @click="recordPage('true',item.id)">{{ item.record }}</a>
-                    <a v-else class=" decoration-solid text-blue-600 text cursor-pointer"  @click="recordPage('',item.id)">{{ item.record }}</a>
+                    <a v-if="!isWrite" class=" decoration-solid text-blue-600 text cursor-pointer"
+                        @click="recordPage('true', item.id)">{{ item.record }}</a>
+                    <a v-else class=" decoration-solid text-blue-600 text cursor-pointer" @click="recordPage('', item.id)">{{
+                        item.record }}</a>
                 </td>
                 <td v-else>尚未結束</td>
             </tr>
         </table>
+
         <ul v-if="totalPage !== 0" class=" w-full ">
             <div class="flex libox text-center">
                 <li v-if="thisPage !== 0" @click="changePage(-1)">{{ "<" }}</li>
@@ -379,9 +382,10 @@ export default {
                 <li v-if="thisPage < totalPage - 1" @click="changePage(1)">{{ ">" }}</li>
             </div>
         </ul>
-    </div>
-    <div class=" w-full ">
-        <h2 v-if="totalPage !== 0" class=" text-center font-bold  w-28  my-0 mx-auto">目前頁數 {{ thisPage + 1 }}</h2>
+
+        <div class=" w-full ">
+            <h2 v-if="totalPage !== 0" class=" text-center font-bold  w-28  my-0 mx-auto">目前頁數 {{ thisPage + 1 }}</h2>
+        </div>
     </div>
 </template>
 

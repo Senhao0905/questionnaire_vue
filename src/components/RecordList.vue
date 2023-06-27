@@ -29,8 +29,19 @@ export default {
                 })
 
         },
-        checkInfo(seq){
-            console.log(seq);
+        checkInfo(s){
+            console.log(s);
+            this.$router.push({
+                name : 'record.info',
+                params : {
+                    seq : s,
+                }
+            })
+        },
+        backPage(){
+            this.$router.push({
+                name : 'BackEnd'
+            });
         }
     },
     mounted() {
@@ -42,20 +53,21 @@ export default {
 
 
 <template>
-    <div>
+    <div class=" border-b border-black rounded-md my-2">
+        <i class="fa-solid fa-arrow-left-long text-4xl hover:scale-105 cursor-pointer" @click="backPage"></i>
         <table class=" w-full border-black">
-            <tr class="text-center  border-black font-bold">
-                <th>#</th>
+            <tr class="text-center border rounded-md  border-black font-bold">
+                <th class=" border-r border-black rounded-md">#</th>
                 <th>姓名</th>
                 <th>填寫時間</th>
                 <th>觀看細節</th>  
             </tr>
 
             <tr v-if="recordList !== null" v-for="( item , index ) in  recordList" class=" text-center font-bold">
-                <th>{{ recordList === null ? "" : index+1  }}</th>
-                <th>{{ recordList === null ? "" : item.name  }}</th>
-                <th>{{ recordList === null ? "" : item.localDateTime }}</th>
-                <th><p class=" text-blue-600 font-mono font-bold cursor-pointer " @click="checkInfo(item.seq)">查看</p></th>
+                <th class=" border-r border-l  border-black rounded-md">{{ recordList === null ? "" : index+1  }}</th>
+                <th class=" border-r border-black rounded-md">{{ recordList === null ? "" : item.name  }}</th>
+                <th class=" border-r border-black rounded-md"> {{ recordList === null ? "" : item.localDateTime }}</th>
+                <th class=" border-r border-black rounded-md"><p class=" text-blue-600 font-mono font-bold cursor-pointer " @click="checkInfo(item.seq)">查看</p></th>
             </tr>
         </table>
     </div>

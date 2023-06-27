@@ -94,18 +94,18 @@ export default {
                 </div>
                 <div v-else>
                     <div v-for="i in item.answer">
-                        <div v-for="(value, key) in answers">    
-                                <div v-if="key == index + 1 && value.includes(i.id)">
-                                    <input :disabled="true" type="checkbox" :name="item.name" :id="item.id + i.id"
-                                        :checked="true">
-                                    <label :for="item.id + i.id">{{ i.answerValue }}</label>
-                                </div>
-                                <div v-if="key == index + 1 && !value.includes(i.id)">
-                                    <input :disabled="true" type="radio" :name="item.name" :id="item.id + i.answerValue"
-                                        :checked="false">
-                                    <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
-                                </div>
+                        <div v-for="(value, key) in answers">
+                            <div v-if="key == index + 1 && value.includes(i.id)">
+                                <input :disabled="true" type="checkbox" :name="item.name" :id="item.id + i.id"
+                                    :checked="true">
+                                <label :for="item.id + i.id">{{ i.answerValue }}</label>
                             </div>
+                            <div v-if="key == index + 1 && !value.includes(i.id)">
+                                <input :disabled="true" type="radio" :name="item.name" :id="item.id + i.answerValue"
+                                    :checked="false">
+                                <label :for="item.id + i.answerValue">{{ i.answerValue }}</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -14,7 +14,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(indexStore, ["updateLocation"]),
+        ...mapActions(indexStore, ["updateLocation", "setInfo", "setQuestions", "setAnswer"]),
         getToday() {
             let today = new Date();
             let year = today.getFullYear();
@@ -32,7 +32,20 @@ export default {
         }
     },
     mounted() {
+
         this.updateLocation(10);
+        let resInfo = {
+            questionnaireId: null,
+            name: null,
+            phone: null,
+            email: null,
+            age: null
+        };
+
+        this.setInfo(resInfo);
+        let answer = {};
+        this.setAnswer(answer)
+        sessionStorage.setItem("id", null);
         this.getToday();
     }
 }
@@ -40,7 +53,7 @@ export default {
 </script>
 
 <template>
-    <div class="border-2 border-black rounded-md h-5/6 my-3 flex flex-col justify-between">
+    <div class="border-2 border-black rounded-md h-5/6 my-3 ">
         <ListPageView :day="day" :isWrite="isWrite" />
     </div>
 </template>

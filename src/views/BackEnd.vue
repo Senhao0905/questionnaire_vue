@@ -51,7 +51,7 @@ export default {
 </script>
 
 <template>
-    <div class="border-2 border-black rounded-md h-5/6 my-3 flex flex-col justify-between">
+    <div class="border-2 border-black rounded-md h-5/6 my-3 ">
         <ListPageView :day="day" :isWrite="isWrite" />
     </div>
 </template>
