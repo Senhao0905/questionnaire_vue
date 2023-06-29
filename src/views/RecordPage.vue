@@ -2,7 +2,7 @@
 import { mapStores, mapActions, mapState } from "pinia";
 import indexStore from "../stores/indexStore.js";
 export default {
-    props: ["qid"],
+    props: ["qid","isBack"],
     computed: {
         // mapState => pinia:state , getters
         ...mapState(indexStore, ["location", "getLocation","anserCount"])

@@ -36,7 +36,6 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     Object.keys(data.resMap).forEach(key => {
-                        console.log("1");
                         let id = key;
                         let name = null;
                         let type = null;
@@ -67,12 +66,7 @@ export default {
                     })
                     console.log(this.questions);
                     this.labels = this.questions;
-                        
-                    
-
-                })
-
-                
+                }) 
         },
 
     },

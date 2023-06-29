@@ -58,6 +58,7 @@ export default {
 
             this.name = null;
             this.select = null;
+            this.isNew = true;
         },
         del() {
             if (this.delArr.length == 0) {
@@ -104,6 +105,8 @@ export default {
 
             console.log(body)
             this.insertQuestions(body);
+            this.name = null;
+            this.select = null;
 
         },
         backQuestionniare() {
@@ -146,6 +149,11 @@ export default {
                     .then(res => res.json())
                     .then(data => {
                         console.log(data);
+                        if(data.message !== "Successful !"){
+                            alert("問題內容有誤");
+                            return;
+                        }
+                        location.href = '/backEnd'
                     })
             })
             console.log(newQuestion)
@@ -175,13 +183,17 @@ export default {
                     .then(res => res.json())
                     .then(data => {
                         console.log(data);
+                        if(data.message !== "Successful !"){
+                            alert("問題內容有誤");
+                            return;
+                        }
                         let questions = [];
                         this.setQuestions(questions);
-
-                        alert("儲存成功");
                         location.href = '/backEnd'
                     })
             })
+
+            alert("儲存成功")
         },
         saveChange() {
             console.log(this.questionnaire);
@@ -254,14 +266,8 @@ export default {
                         this.setQuestionniare(questionnaire);
                         sessionStorage.setItem("id",data.questionnaire.id);
                         this.saveChangeQuestion();
-                    })
-                
-                
+                    }) 
             }
-
-
-
-
 
         }
     },
