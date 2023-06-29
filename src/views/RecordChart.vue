@@ -68,7 +68,16 @@ export default {
                     this.labels = this.questions;
                 }) 
         },
-
+        backPage(){
+            if(this.isBack){
+                this.$router.back();
+               
+            
+            }
+            this.$router.push({
+                name : 'FrontEnd'
+            })
+        }
     },
     mounted() {
         if (this.isBack) {
@@ -85,6 +94,7 @@ export default {
 </script>
 
 <template>
+    <i class="fa-solid fa-arrow-left-long text-4xl hover:scale-105 cursor-pointer" @click="backPage"></i>
     <div class=" my-2 border border-black rounded-md">
         <div class="border-b border-black"  v-for="(item, index) in questions" :key="item.id">
         <h2>第{{ index + 1 }}題:</h2>
