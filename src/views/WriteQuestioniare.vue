@@ -124,6 +124,13 @@ export default {
                     propText: this.questionniare.name
                 }
             })
+        },
+        checkAge(){
+            console.log("1")
+            if(this.resInfo.age < 0){
+                alert("歲數不可小於0");
+                this.resInfo.age = 0 ;
+            }
         }
     }
 }
@@ -149,7 +156,7 @@ export default {
         </div>
         <div class="my-2 flex w-full justify-start items-center">
             <h3 class="mx-5 font-bold">年齡 :</h3>
-            <input type="number" class=" mx-5 border rounded-md border-black" v-model="resInfo.age">
+            <input v-on:input="checkAge" type="number" class=" mx-5 border rounded-md border-black" v-model="resInfo.age">
         </div>
 
         <!-- 題目區 -->

@@ -97,12 +97,14 @@ export default {
             this.pageItem = [];
             this.thisPage = page - 1;
             console.log(this.thisPage)
-            if (this.isSearch) {
+            if (this.isDate) {
                 let body = {
-                    "name": this.keyWord,
+                    name: this.keyWord,
+                    "startDate": this.start,
+                    "endDate": this.end,
                     "pageNumber": this.thisPage
                 }
-                fetch("http://localhost:8080/search_by_name_containing", {
+                fetch("http://localhost:8080/search_by_date_name", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -112,7 +114,18 @@ export default {
                     .then(res => res.json())
                     .then(data => {
                         console.log(data);
+                        if (data.message === "Not found") {
+                            alert("查無資料 !");
+                            return;
+                        }
+                        else if (data.message === "Date is error ! ") {
+                            alert("日期有誤 !");
+                            return;
+                        }
+                        this.pageItem = [];
                         data.page.content.forEach(i => {
+
+
                             let newStart = new Date(i.start);
                             let newEnd = new Date(i.end);
                             let newDay = new Date(this.day)
@@ -212,22 +225,29 @@ export default {
         changeDate() {
             this.isSearch = false;
             this.isDate = true;
+            this.keyWord = this.inputWord;
             this.thisPage = 0;
             this.searchDate();
 
         },
         searchDate() {
-            if (this.start === null || this.end === null) {
-                alert("日期不可為空 !");
-                return;
-            }
-            let body = {
 
+            if (this.start != null && this.end != null) {
+                let newStart = new Date(this.start);
+                let newEnd = new Date(this.end);
+                if(newEnd < newStart){
+                    alert("日期有誤");
+                    return;
+                }
+            }
+
+            let body = {
+                name: this.keyWord,
                 "startDate": this.start,
                 "endDate": this.end,
                 "pageNumber": this.thisPage
             }
-            fetch("http://localhost:8080/search_by_data", {
+            fetch("http://localhost:8080/search_by_date_name", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -237,8 +257,18 @@ export default {
                 .then(res => res.json())
                 .then(data => {
                     console.log(data);
+                    if (data.message === "Not found") {
+                        alert("查無資料 !");
+                        return;
+                    }
+                    else if (data.message === "Date is error ! ") {
+                        alert("日期有誤 !");
+                        return;
+                    }
                     this.pageItem = [];
                     data.page.content.forEach(i => {
+
+
                         let newStart = new Date(i.start);
                         let newEnd = new Date(i.end);
                         let newDay = new Date(this.day)
@@ -310,8 +340,8 @@ export default {
     <div class="search-box w-8/12 mx-auto my-2 h-24 border-2 border-black rounded-xl ">
         <div class="title flex m-2 relative">
             <h2 class="m-0">問卷標題 ：</h2>
-            <i @click="changeKeyWord"
-                class="cursor-pointer hover:scale-105 fa-solid fa-magnifying-glass absolute top-1 left-[240px]"></i>
+            <!-- <i @click="changeKeyWord"
+                class="cursor-pointer hover:scale-105 fa-solid fa-magnifying-glass absolute top-1 left-[240px]"></i> -->
             <input class=" border-2  border-black rounded-md" type="text" v-model="inputWord">
         </div>
         <div class="time-input flex m-2">
@@ -366,8 +396,9 @@ export default {
                 <td v-if="item.status === '已結束'">
                     <a v-if="!isWrite" class=" decoration-solid text-blue-600 text cursor-pointer"
                         @click="recordPage('true', item.id)">{{ item.record }}</a>
-                    <a v-else class=" decoration-solid text-blue-600 text cursor-pointer" @click="recordPage('', item.id)">{{
-                        item.record }}</a>
+                    <a v-else class=" decoration-solid text-blue-600 text cursor-pointer"
+                        @click="recordPage('', item.id)">{{
+                            item.record }}</a>
                 </td>
                 <td v-else>尚未結束</td>
             </tr>
