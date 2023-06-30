@@ -393,14 +393,14 @@ export default {
                 <td>{{ item.start }}</td>
                 <td>{{ item.end }}</td>
 
-                <td v-if="item.status === '已結束'">
+                <td v-if="item.status !== '未開始'">
                     <a v-if="!isWrite" class=" decoration-solid text-blue-600 text cursor-pointer"
                         @click="recordPage('true', item.id)">{{ item.record }}</a>
                     <a v-else class=" decoration-solid text-blue-600 text cursor-pointer"
                         @click="recordPage('', item.id)">{{
                             item.record }}</a>
                 </td>
-                <td v-else>尚未結束</td>
+                <td v-else>尚未開始</td>
             </tr>
         </table>
 

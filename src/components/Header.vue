@@ -17,8 +17,10 @@ export default {
 </script>
 
 <template>
-    <header class=" flex flex-col justify-center items-center">
-        <h2 class=" text-4xl text-blue-500 font-bold">動態問卷系統</h2>
+    <header class=" bg-slate-300 flex flex-col justify-center items-center">
+        <h2 class=" w-full text-center  text-4xl  font-bold  rounded-xl">
+            <p class=" stroke-2 stroke-red-500">動態問卷</p>
+        </h2>
         <div class="router-box w-full flex justify-between">
             <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 9 < location && 20 > location}" to="/">問卷填寫</RouterLink>
             <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 19 < location && location < 30 }" to="/backEnd">問卷管理
@@ -38,7 +40,7 @@ header {
         border-radius: 5px;
         transition: 0.9s;
         border-bottom: 1px black solid;
-        color: purple;
+        color: rgb(34, 56, 81);
     }
 }
 </style>

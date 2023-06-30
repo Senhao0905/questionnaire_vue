@@ -80,6 +80,7 @@ export default {
         }
     },
     mounted() {
+        
         if (this.isBack) {
             this.updateLocation(24)
         }
