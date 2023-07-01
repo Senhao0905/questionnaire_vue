@@ -12,6 +12,7 @@ export default {
         }
     },
     mounted() {
+        console.log(this.answers);
         this.getQuestion();
     },
     computed: {
@@ -60,11 +61,19 @@ export default {
                             id: id,
                             name: name,
                             type: type,
-                            answer: answer
+                            answer: answer,
+                            check: true,
+                            error: false
                         })
                     })
 
                     console.log(this.questions);
+                    if (Object.keys(this.answers).length == 0) {
+                        this.questions.forEach((i, index) => {
+                            console.log(index);
+                            this.answers[index + 1] = []
+                        })
+                    }
                 })
 
         },
@@ -80,7 +89,7 @@ export default {
         addValueCheck(id, answer, checked) {
             let check = document.getElementById(`${checked}`).checked;
             console.log(check);
-            if(this.answers[id] == undefined){
+            if (this.answers[id] == undefined) {
                 this.answers[id] = [];
             }
             if (check) {
@@ -89,17 +98,20 @@ export default {
             else {
                 let arr = [];
                 this.answers[id].forEach(i => {
-                    if(i != answer){
+                    if (i != answer) {
                         arr.push(i);
                     }
                 })
-                this.answers[id] = arr ;
+                this.answers[id] = arr;
             }
             console.log(this.answers)
         },
         saveAnswer() {
             console.log(this.resInfo);
             console.log(this.resAnswer);
+            this.questions.forEach((i, index) => {
+                i.error = false;
+            })
             if (this.resInfo.name === null || this.resInfo.name === "") {
                 return alert("請輸入姓名 !");
             }
@@ -112,24 +124,45 @@ export default {
             if (this.resInfo.age === null) {
                 return alert("請輸入年齡 !");
             }
-            if (Object.keys(this.answers).length !== this.questions.length) {
-                return alert("請選擇答案後再送出 !");
-            }
-            this.setInfo(this.resInfo);
-            this.setQuestions(this.questions);
-            console.log(this.questionniare.name);
-            this.$router.push({
-                name: 'check',
-                params: {
-                    propText: this.questionniare.name
+            // if (Object.keys(this.answers).length !== this.questions.length) {
+            //     return alert("請選擇答案後再送出 !");
+            // }
+            this.questions.forEach((item, index) => {
+                if (item.check) {
+                    if (this.answers[index + 1].length == 0) {
+                        item.error = true;
+                    }
                 }
             })
+            let errorCheck = false;
+            this.questions.forEach(item => {
+                if (item.error) {
+                    errorCheck = true
+                }
+            })
+            if (errorCheck) {
+                alert("必填問題尚未選取");
+                return;
+            }
+            else {
+                console.log("123");
+                this.setInfo(this.resInfo);
+                this.setQuestions(this.questions);
+                console.log(this.questionniare.name);
+                this.$router.push({
+                    name: 'check',
+                    params: {
+                        propText: this.questionniare.name
+                    }
+                })
+            }
+
         },
-        checkAge(){
+        checkAge() {
             console.log("1")
-            if(this.resInfo.age < 0){
+            if (this.resInfo.age < 0) {
                 alert("歲數不可小於0");
-                this.resInfo.age = 0 ;
+                this.resInfo.age = 0;
             }
         }
     }
@@ -161,9 +194,13 @@ export default {
 
         <!-- 題目區 -->
         <div v-if="questions !== null">
-            <div class="m-3" v-for="(item, index ) in questions">
+            <div :class="{ error: item.error }" class="m-3  px-2 rounded-md" v-for="(item, index ) in questions">
                 <h3>題號 :{{ index + 1 }}</h3>
-                <h3>Q : {{ item.name }}</h3>
+                <div class=" flex">
+                    <h3>Q : {{ item.name }}</h3>
+                    <p class=" mx-2 text-red-500">(必填)</p>
+                </div>
+
                 <div v-if="item.type === '單選'">
                     <div v-for="i in item.answer">
                         <div v-if="Object.keys(this.answers).length === this.questions.length"
@@ -228,4 +265,9 @@ export default {
     </div>
 </template>
 
-<style></style>
+<style lang="scss" scoped>
+.error {
+    border: 2px red solid;
+    border-radius: 5px;
+}
+</style>
