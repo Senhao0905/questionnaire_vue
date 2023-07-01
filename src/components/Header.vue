@@ -22,8 +22,10 @@ export default {
             <p class=" stroke-2 stroke-red-500">動態問卷</p>
         </h2>
         <div class="router-box w-full flex justify-between">
-            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 9 < location && 20 > location}" to="/">問卷填寫</RouterLink>
-            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 19 < location && location < 30 }" to="/backEnd">問卷管理
+            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 9 < location && 20 > location }"
+                to="/">問卷填寫</RouterLink>
+            <RouterLink class=" text-blue-500 mx-3 text-2xl font-bold" :class="{ local: 19 < location && location < 30 }"
+                to="/backEnd">問卷管理
             </RouterLink>
         </div>
 
@@ -35,12 +37,13 @@ header {
     width: 100%;
     height: 100px;
     border-radius: 10px;
+
     .local {
         font-size: 30px;
         border-radius: 5px;
         transition: 0.9s;
-        border-bottom: 1px black solid;
+        background: white;
+        padding: 0 10px;
         color: rgb(34, 56, 81);
     }
-}
-</style>
+}</style>
