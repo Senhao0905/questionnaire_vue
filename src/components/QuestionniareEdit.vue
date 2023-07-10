@@ -110,7 +110,7 @@ export default {
 
         <div class=" flex px-2 my-2">
             <h2>描述內容 :</h2>
-            <textarea class=" border border-black rounded-md mx-2" name="" id="" cols="50" rows="5"
+            <textarea class=" border resize-none border-black rounded-md mx-2" resize="none" name="" id="" cols="50" rows="5"
                 v-model="textValue"></textarea>
         </div>
 
